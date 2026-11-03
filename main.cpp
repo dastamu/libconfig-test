@@ -12,6 +12,17 @@ void generateDefaultConfig(const std::string& filename) {
     root.add("name", libconfig::Setting::TypeString) = "appka";
     root.add("ver", libconfig::Setting::TypeString) = "1.0.0";
 
+    // float & bool
+    root.add("pi_value", libconfig::Setting::TypeFloat) = 3.14159265f;
+    root.add("debug_mode", libconfig::Setting::TypeBoolean) = true;
+
+    // Array
+    libconfig::Setting& ports_set = root.add("allowed_ports", libconfig::Setting::TypeArray);
+    ports_set.add(libconfig::Setting::TypeInt) = 80;
+    ports_set.add(libconfig::Setting::TypeInt) = 443;
+    ports_set.add(libconfig::Setting::TypeInt) = 8080;
+
+    // List
     libconfig::Setting& tab = root.add("tab", libconfig::Setting::TypeList);
 
     libconfig::Setting& elem1 = tab.add(libconfig::Setting::TypeGroup);
@@ -65,13 +76,27 @@ int main(int argc, char* argv[]) {
 
     // Getting basic values ​​(id, name, ver)
     try {
+        // Read Vars
         int id = cfg.lookup("id");
         std::string name = cfg.lookup("name");
         std::string ver = cfg.lookup("ver");
+        float pi_value = cfg.lookup("pi_value");
+        bool debug_mode = cfg.lookup("debug_mode");
 
         std::cout << "ID: " << id << "\n";
         std::cout << "NAME: " << name << "\n";
-        std::cout << "VERSION: " << ver << "\n\n";
+        std::cout << "VERSION: " << ver << "\n";
+        std::cout << "PI: " << pi_value << "\n";
+        std::cout << "DEBUG: " << (debug_mode ? "YES" : "NO") << "\n\n";
+
+        // Read Array
+        const libconfig::Setting& ports = cfg.lookup("allowed_ports");
+        std::cout << "PORTS: ";
+        for(int i = 0; i < ports.getLength(); ++i) {
+            int port = ports[i];
+            std::cout << port << (i < ports.getLength() - 1 ? ", " : "");
+        }
+        std::cout << "\n\n";
 
         // Fetching and iterating through a list of objects (tab)
         const libconfig::Setting& tab = cfg.lookup("tab");
