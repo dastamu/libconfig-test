@@ -21,6 +21,10 @@ git submodule update --remote libconfig
 mkdir build && cd build
 cmake ..
 cmake --build .
+
+rm -rf *
+cmake ..
+cmake --build .
 ```
 
 ## Run
