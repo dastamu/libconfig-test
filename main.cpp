@@ -5,7 +5,7 @@
 int main() {
     libconfig::Config cfg;
 
-    // 1. Loading the configuration file
+    // Loading the configuration file
     try {
         cfg.readFile("config.cfg");
     } 
@@ -19,7 +19,7 @@ int main() {
         return -1;
     }
 
-    // 2. Getting basic values ​​(id, name, ver)
+    // Getting basic values ​​(id, name, ver)
     try {
         int id = cfg.lookup("id");
         std::string name = cfg.lookup("name");
@@ -29,7 +29,7 @@ int main() {
         std::cout << "NAME: " << name << "\n";
         std::cout << "VERSION: " << ver << "\n\n";
 
-        // 3. Fetching and iterating through a list of objects (tab)
+        // Fetching and iterating through a list of objects (tab)
         const libconfig::Setting& tab = cfg.lookup("tab");
         std::cout << "List contents of 'tab':\n";
         
