@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
 project(libconfig_test C CXX)
 
-# Wymagany standard C++
+# C++ standard required
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Konfiguracja submodułu libconfig
-# Oryginalne repozytorium libconfig używa głównie Autotools, 
-# ale najprostszym i najbardziej niezawodnym sposobem na wpięcie go jako submoduł 
-# w CMake jest bezpośrednie zbudowanie jego plików źródłowych jako biblioteki statycznej.
+# Configuring the libconfig submodule
+# The original libconfig repository mainly uses Autotools,
+# but the simplest and most reliable way to include it as a submodule
+# in CMake is to directly build its source files as a static library.
 
 set(LIBCONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libconfig/lib)
 
-# Pełna lista plików źródłowych C (dodano pliki util, wincompat itp.)
+# Complete list of C source files (added util, wincompat, etc.)
 set(LIBCONFIG_C_SOURCES
     ${LIBCONFIG_DIR}/libconfig.c
     ${LIBCONFIG_DIR}/grammar.c
@@ -24,35 +24,35 @@ set(LIBCONFIG_C_SOURCES
     ${LIBCONFIG_DIR}/strvec.c
 )
 
-# Plik źródłowy C++
+# C++ source file
 set(LIBCONFIG_CPP_SOURCES
     ${LIBCONFIG_DIR}/libconfigcpp.c++
 )
 
-# Tworzymy lokalny cel biblioteki statycznej łącząc oba typy plików
+# We create a local static library target by combining both file types
 add_library(libconfig STATIC ${LIBCONFIG_C_SOURCES} ${LIBCONFIG_CPP_SOURCES})
 
-# POPRAWKA 2: Dla pewności wymuszamy na CMake odpowiednie kompilatory dla plików
+# To be sure, we force CMake to use the appropriate compilers for the files
 set_source_files_properties(${LIBCONFIG_C_SOURCES} PROPERTIES LANGUAGE C)
 set_source_files_properties(${LIBCONFIG_CPP_SOURCES} PROPERTIES LANGUAGE CXX)
 
-# Wskazujemy katalogi z plikami nagłówkowymi submodułu
+# We indicate the directories with the submodule header files
 target_include_directories(libconfig PUBLIC ${LIBCONFIG_DIR})
 
-# Wyłączenie ostrzeżeń dla kodu zewnętrznej biblioteki
+# Disabling warnings for external library code
 if(MSVC)
     target_compile_options(libconfig PRIVATE /W0)
 else()
     target_compile_options(libconfig PRIVATE -w)
 endif()
 
-# 2. Konfiguracja Twojego programu
+# Configuring your program
 add_executable(main main.cpp)
 
-# Linkowanie biblioteki
+# Library linking
 target_link_libraries(main PRIVATE libconfig)
 
-# 3. Kopiowanie pliku konfiguracyjnego do folderu uruchomieniowego
+# Copying the configuration file to the startup folder
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.cfg
     ${CMAKE_CURRENT_BINARY_DIR}/config.cfg

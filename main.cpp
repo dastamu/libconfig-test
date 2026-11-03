@@ -5,46 +5,46 @@
 int main() {
     libconfig::Config cfg;
 
-    // 1. Wczytanie pliku konfiguracyjnego
+    // 1. Loading the configuration file
     try {
         cfg.readFile("config.cfg");
     } 
     catch(const libconfig::FileIOException &fioex) {
-        std::cerr << "Blad wejscia/wyjscia podczas czytania pliku." << std::endl;
+        std::cerr << "I/O error while reading file." << std::endl;
         return -1;
     } 
     catch(const libconfig::ParseException &pex) {
-        std::cerr << "Blad parsowania w pliku " << pex.getFile() << " linia " 
+        std::cerr << "Parsing error in file " << pex.getFile() << " in line " 
                   << pex.getLine() << ": " << pex.getError() << std::endl;
         return -1;
     }
 
-    // 2. Pobieranie podstawowych wartości (id, name, ver)
+    // 2. Getting basic values ​​(id, name, ver)
     try {
         int id = cfg.lookup("id");
         std::string name = cfg.lookup("name");
         std::string ver = cfg.lookup("ver");
 
         std::cout << "ID: " << id << "\n";
-        std::cout << "Nazwa: " << name << "\n";
-        std::cout << "Wersja: " << ver << "\n\n";
+        std::cout << "NAME: " << name << "\n";
+        std::cout << "VERSION: " << ver << "\n\n";
 
-        // 3. Pobieranie i iteracja po liście obiektów (tab)
+        // 3. Fetching and iterating through a list of objects (tab)
         const libconfig::Setting& tab = cfg.lookup("tab");
-        std::cout << "Zawartosc listy 'tab':\n";
+        std::cout << "List contents of 'tab':\n";
         
         for(int i = 0; i < tab.getLength(); ++i) {
             const libconfig::Setting& element = tab[i];
             
             int x, z;
-            // Pobieranie wartości z konkretnego elementu listy
+            // Getting a value from a specific list item
             if(element.lookupValue("x", x) && element.lookupValue("z", z)) {
-                std::cout << "  Element [" << i << "] -> x: " << x << ", z: " << z << "\n";
+                std::cout << "  Item [" << i << "] -> x: " << x << ", z: " << z << "\n";
             }
         }
     } 
     catch(const libconfig::SettingNotFoundException &nfex) {
-        std::cerr << "Nie znaleziono wymaganej opcji w pliku konfiguracyjnym." << std::endl;
+        std::cerr << "A required option was not found in the configuration file." << std::endl;
     }
 
     return 0;
